@@ -3,7 +3,7 @@ import UseImperativeHandleDemo from "./useImperativeHandle";
 import OptimizationHooksDemo from "./optimizationHooks";
 import UseReducerDemo from "./useReducer";
 import BasicHooksDemo from "./basicHooks";
-
+import AntdStyleDemo from "./antdStyle";
 export interface DemoItem {
   id: string;
   name: string;
@@ -36,5 +36,10 @@ export const demoList: DemoItem[] = [
     component: UseImperativeHandleDemo,
     description: "forwardRef 和 useImperativeHandle 的用法示例",
   },
+  {
+    id: "antdStyle",
+    name: "antd-style",
+    component: AntdStyleDemo,
+    description: "antd-style 特性试验示例",
+  },
 ];
-
