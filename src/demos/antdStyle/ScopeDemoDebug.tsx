@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Space } from "antd";
 import { createStyles } from "antd-style";
+import Component4 from "./Component4";
 
 // 示例：证明 CSS-in-JS 库（antd-style）会生成独一无二的 CSS class 名
 // 即使不同组件使用相同的样式类名（如 container），生成的 CSS class 名也是唯一的
@@ -69,25 +70,7 @@ const useStyles3 = createStyles(
   }
 );
 
-const useStyles4 = createStyles(
-  () => ({
-    container: {
-      backgroundColor: "#fff1f0",
-      border: "2px solid #ffccc7",
-      padding: "20px",
-      borderRadius: "8px",
-      margin: "10px 0",
-    },
-    title: {
-      color: "#a8071a",
-      fontSize: "16px",
-      fontWeight: "bold",
-    },
-  }),
-  {
-    label: "container4", // label 作为 createStyles 的第二个参数（注意：label 不会直接显示在类名上）
-  }
-);
+// Component4 已提取到单独的文件中，以便单独应用 babel-plugin-antd-style 插件
 
 // 组件1：蓝色主题
 const Component1: React.FC = () => {
@@ -289,21 +272,6 @@ const Component3: React.FC = () => {
           4. label
           的实际意义：帮助开发者在调试时快速识别样式来源，特别是在大型项目中
         </div>
-      </div>
-    </div>
-  );
-};
-
-const Component4: React.FC = () => {
-  const { styles } = useStyles4();
-  return (
-    <div className={styles.container}>
-      <div className={styles.title}>组件 4 - 红色主题</div>
-      <div>这个组件同样使用了 container 样式类名</div>
-      <div>生成的 CSS class 名是唯一的，例如：acss-6fhl5b</div>
-      <div>
-        我们使用了插件：babel-plugin-antd-style，这个插件会在生成的class
-        name中添加标识，仅 dev 生效。
       </div>
     </div>
   );
