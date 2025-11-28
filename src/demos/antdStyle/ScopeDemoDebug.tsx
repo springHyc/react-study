@@ -309,13 +309,56 @@ const ScopeDemoDebug: React.FC = () => {
         <Component4 />
       </Space>
 
-      <Card title="对比：普通 CSS 类名" style={{ marginTop: "24px" }}>
-        <div style={{ marginTop: "16px" }}>
-          <p>
-            如果使用普通的 CSS 类名（如 <code>className="container"</code>），
-            所有使用相同类名的元素都会应用相同的样式，无法实现样式隔离。
-          </p>
-          <p>而 CSS-in-JS 通过生成唯一的类名，实现了真正的样式封装和隔离。</p>
+      <Card title="普通 CSS 类名对比与调试建议" style={{ marginTop: "24px" }}>
+        <div style={{ marginTop: "16px", color: "#555" }}>
+          <div>
+            <strong>推荐：</strong>
+            开启 <code>babel-plugin-antd-style</code> 插件，可让生成的 class
+            name 自动带有语义化标识，方便开发时排查样式来源（仅在{" "}
+            <code>dev</code> 环境生效）。
+          </div>
+          <div style={{ margin: "8px 0 0 0" }}>
+            <span style={{ color: "#1677ff" }}>vite 配置示例：</span>
+            <pre>
+              <code>
+                {`// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+    plugins: [
+        react({
+            babel: {
+                plugins: [
+                    ['babel-plugin-antd-style', { libraryName: 'antd-style' }],
+                ],
+            },
+        }),
+    ],
+});
+`}
+              </code>
+            </pre>
+          </div>
+          <div>
+            <span style={{ color: "#fa8c16" }}>注意：</span>
+            插件只在本地开发环境有效，线上环境不会附带 label
+            信息。如果你需要线上环境也方便调试，可手动为{" "}
+            <code>createStyles</code> 添加 <code>label</code> 属性：
+            <pre>
+              <code>
+                {`const useStyles = createStyles(
+  ({ css }) => ({
+    container: css\` ...,label: 'Component3-Styles', \`,
+  })
+);`}
+              </code>
+            </pre>
+          </div>
+          <div>
+            这样生成的类名类似于：<code>acss-xxxxxx-Component3-Styles</code>，
+            便于定位样式来源。
+          </div>
         </div>
       </Card>
     </div>
