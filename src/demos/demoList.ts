@@ -4,6 +4,7 @@ import OptimizationHooksDemo from "./optimizationHooks";
 import UseReducerDemo from "./useReducer";
 import BasicHooksDemo from "./basicHooks";
 import AntdStyleDemo from "./antdStyle";
+import UseTransitionDemo from "./useTransition";
 export interface DemoItem {
   id: string;
   name: string;
@@ -41,5 +42,11 @@ export const demoList: DemoItem[] = [
     name: "antd-style",
     component: AntdStyleDemo,
     description: "antd-style 特性试验示例",
+  },
+  {
+    id: "useTransition",
+    name: "useTransition",
+    component: UseTransitionDemo,
+    description: "useTransition 和 startTransition 的用法示例，用于优化大量状态更新时的 UI 响应性",
   },
 ];
