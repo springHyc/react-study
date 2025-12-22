@@ -5,6 +5,8 @@ import UseReducerDemo from "./useReducer";
 import BasicHooksDemo from "./basicHooks";
 import AntdStyleDemo from "./antdStyle";
 import UseTransitionDemo from "./useTransition";
+import UseTransitionVsLoadingDemo from "./useTransitionVsLoading";
+import TestDemo from "./testdemo";
 export interface DemoItem {
   id: string;
   name: string;
@@ -49,5 +51,18 @@ export const demoList: DemoItem[] = [
     component: UseTransitionDemo,
     description:
       "useTransition 和 startTransition 的用法示例，用于优化大量状态更新时的 UI 响应性",
+  },
+  {
+    id: "useTransitionVsLoading",
+    name: "useTransition vs loading",
+    component: UseTransitionVsLoadingDemo,
+    description:
+      "对比 useTransition 和普通 useState 设置 loading 状态的区别，展示两种实现方式的差异和适用场景",
+  },
+  {
+    id: "testdemo",
+    name: "testdemo",
+    component: TestDemo,
+    description: "测试用的 Demo",
   },
 ];
