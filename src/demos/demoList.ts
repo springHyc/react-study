@@ -47,6 +47,7 @@ export const demoList: DemoItem[] = [
     id: "useTransition",
     name: "useTransition",
     component: UseTransitionDemo,
-    description: "useTransition 和 startTransition 的用法示例，用于优化大量状态更新时的 UI 响应性",
+    description:
+      "useTransition 和 startTransition 的用法示例，用于优化大量状态更新时的 UI 响应性",
   },
 ];
