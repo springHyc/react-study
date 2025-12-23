@@ -93,3 +93,4 @@ fetchData().then(data => {
 3. **isPending**：用于显示加载状态，提升用户体验
 4. **不能用于控制**：`startTransition` 中的更新不能用于控制文本输入等需要同步的场景
 
+
