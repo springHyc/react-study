@@ -129,6 +129,3 @@ export const codeBlockStyle = {
   overflowX: "auto" as const,
   marginTop: "15px",
 };
-
-
-

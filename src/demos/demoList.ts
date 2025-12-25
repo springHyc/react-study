@@ -7,6 +7,7 @@ import AntdStyleDemo from "./antdStyle";
 import UseTransitionDemo from "./useTransition";
 import UseTransitionVsLoadingDemo from "./useTransitionVsLoading";
 import UseDeferredValueDemo from "./useDeferredValue";
+import UseLayoutEffectDemo from "./useLayoutEffect";
 import TestDemo from "./testdemo";
 import ComponentCommunicationDemo from "./componentCommunication";
 export interface DemoItem {
@@ -67,6 +68,13 @@ export const demoList: DemoItem[] = [
     component: UseDeferredValueDemo,
     description:
       "useDeferredValue 的用法示例，用于延迟一个值的更新。应用场景：React 渲染一个大型列表时，一旦用户进行了键盘输入，React 会放弃该列表渲染，先处理键盘输入，然后再次开始在后台界面渲染。同时对比 useDeferredValue 和 useTransition 的区别",
+  },
+  {
+    id: "useLayoutEffect",
+    name: "useLayoutEffect",
+    component: UseLayoutEffectDemo,
+    description:
+      "useLayoutEffect 的用法示例，展示与 useEffect 的区别。useLayoutEffect 在 DOM 更新后、浏览器绘制前同步执行，适用于需要同步读取 DOM 布局、避免闪烁、测量 DOM 尺寸等场景",
   },
   {
     id: "testdemo",
