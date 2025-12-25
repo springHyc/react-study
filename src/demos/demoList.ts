@@ -8,6 +8,7 @@ import UseTransitionDemo from "./useTransition";
 import UseTransitionVsLoadingDemo from "./useTransitionVsLoading";
 import UseDeferredValueDemo from "./useDeferredValue";
 import TestDemo from "./testdemo";
+import ComponentCommunicationDemo from "./componentCommunication";
 export interface DemoItem {
   id: string;
   name: string;
@@ -72,5 +73,12 @@ export const demoList: DemoItem[] = [
     name: "testdemo",
     component: TestDemo,
     description: "测试用的 Demo",
+  },
+  {
+    id: "componentCommunication",
+    name: "组件通信",
+    component: ComponentCommunicationDemo,
+    description:
+      "React 组件通信的 4 种方式：父传子（props）、子传父（回调函数）、兄弟组件通信（共同父组件）、跨层通信（useContext）",
   },
 ];
