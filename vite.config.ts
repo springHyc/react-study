@@ -25,7 +25,7 @@ export default defineConfig({
     sourcemap: true, // 生成 source map 用于调试
   },
   server: {
-    port: 3000,
+    port: 5018,
     host: true, // 允许外部访问
     open: true,
   },
