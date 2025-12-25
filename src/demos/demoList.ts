@@ -6,6 +6,7 @@ import BasicHooksDemo from "./basicHooks";
 import AntdStyleDemo from "./antdStyle";
 import UseTransitionDemo from "./useTransition";
 import UseTransitionVsLoadingDemo from "./useTransitionVsLoading";
+import UseDeferredValueDemo from "./useDeferredValue";
 import TestDemo from "./testdemo";
 export interface DemoItem {
   id: string;
@@ -58,6 +59,13 @@ export const demoList: DemoItem[] = [
     component: UseTransitionVsLoadingDemo,
     description:
       "对比 useTransition 和普通 useState 设置 loading 状态的区别，展示两种实现方式的差异和适用场景",
+  },
+  {
+    id: "useDeferredValue",
+    name: "useDeferredValue",
+    component: UseDeferredValueDemo,
+    description:
+      "useDeferredValue 的用法示例，用于延迟一个值的更新。应用场景：React 渲染一个大型列表时，一旦用户进行了键盘输入，React 会放弃该列表渲染，先处理键盘输入，然后再次开始在后台界面渲染。同时对比 useDeferredValue 和 useTransition 的区别",
   },
   {
     id: "testdemo",

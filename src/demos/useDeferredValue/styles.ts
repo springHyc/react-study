@@ -15,11 +15,6 @@ export const titleStyle = {
   marginBottom: "30px",
 };
 
-// 区域样式
-export const sectionStyle = {
-  marginBottom: "30px",
-};
-
 // 按钮容器样式
 export const buttonContainerStyle = {
   display: "flex",
@@ -130,5 +125,24 @@ export const codeBlockStyle = {
   marginTop: "15px",
 };
 
+// 差异对比表格样式
+export const comparisonTableStyle = {
+  width: "100%",
+  borderCollapse: "collapse" as const,
+  marginTop: "15px",
+};
 
+export const tableHeaderStyle = {
+  backgroundColor: theme.bg.tertiary,
+  padding: "12px",
+  textAlign: "left" as const,
+  border: `1px solid ${theme.border.default}`,
+  fontWeight: "bold" as const,
+};
+
+export const tableCellStyle = {
+  padding: "12px",
+  border: `1px solid ${theme.border.default}`,
+  verticalAlign: "top" as const,
+};
 
