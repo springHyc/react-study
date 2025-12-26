@@ -10,6 +10,7 @@ import UseDeferredValueDemo from "./useDeferredValue";
 import UseLayoutEffectDemo from "./useLayoutEffect";
 import TestDemo from "./testdemo";
 import ComponentCommunicationDemo from "./componentCommunication";
+import ReactCompilerDemo from "./reactCompiler";
 export interface DemoItem {
   id: string;
   name: string;
@@ -88,5 +89,12 @@ export const demoList: DemoItem[] = [
     component: ComponentCommunicationDemo,
     description:
       "React 组件通信的 4 种方式：父传子（props）、子传父（回调函数）、兄弟组件通信（共同父组件）、跨层通信（useContext）",
+  },
+  {
+    id: "reactCompiler",
+    name: "React Compiler",
+    component: ReactCompilerDemo,
+    description:
+      "React Compiler 自动优化示例，对比 React 18 手动优化（useMemo、useCallback）和 React 19 编译器自动优化的区别",
   },
 ];
