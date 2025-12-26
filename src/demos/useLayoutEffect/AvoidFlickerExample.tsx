@@ -7,6 +7,9 @@ import {
   stateDisplayStyle,
 } from "./styles";
 
+/** 延迟时间（毫秒）- 调大这个值可以让闪烁更明显 */
+const DELAY_MS = 300;
+
 /**
  * 示例 2: 避免闪烁 - 工具提示位置计算
  * 展示 useEffect 和 useLayoutEffect 在避免视觉闪烁方面的差异
@@ -20,36 +23,48 @@ const AvoidFlickerExample = () => {
   const tooltipRef2 = useRef<HTMLDivElement>(null);
 
   // 使用 useEffect 可能会导致闪烁
-  // 工具提示先显示在默认位置 (0, 0)，然后 useEffect 执行后移动到正确位置，用户会看到闪烁
+  // 工具提示先显示在默认位置，然后 useEffect 执行后移动到正确位置，用户会看到闪烁
   useEffect(() => {
     if (showTooltip1 && buttonRef1.current && tooltipRef1.current) {
-      const buttonRect = buttonRef1.current.getBoundingClientRect();
-      const tooltipRect = tooltipRef1.current.getBoundingClientRect();
+      const button = buttonRef1.current;
+      const tooltip = tooltipRef1.current;
 
-      // 计算位置：工具提示显示在按钮下方居中
-      let top = buttonRect.bottom + 10;
-      let left = buttonRect.left + (buttonRect.width - tooltipRect.width) / 2;
-
-      // 边界检查
-      if (top + tooltipRect.height > window.innerHeight) {
-        top = buttonRect.top - tooltipRect.height - 10;
-      }
-      if (left < 10) left = 10;
-      if (left + tooltipRect.width > window.innerWidth - 10) {
-        left = window.innerWidth - tooltipRect.width - 10;
-      }
-
-      console.log("🟢 [useEffect] 计算工具提示位置:", {
-        top: top.toFixed(0),
-        left: left.toFixed(0),
-      });
       console.log(
-        "   注意：此时浏览器已经绘制完成，工具提示会先显示在 (0,0)，然后跳到正确位置（闪烁）"
+        "🔴 [useEffect] 工具提示已渲染在屏幕中央，等待",
+        DELAY_MS,
+        "ms 后移动..."
       );
 
-      // 直接修改 DOM，避免触发额外的渲染
-      tooltipRef1.current.style.top = `${top}px`;
-      tooltipRef1.current.style.left = `${left}px`;
+      // 🔴 使用 setTimeout 延迟位置计算，让浏览器有足够时间显示初始位置
+      const timer = setTimeout(() => {
+        const buttonRect = button.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+
+        // 计算位置：工具提示显示在按钮下方居中
+        let top = buttonRect.bottom + 10;
+        let left = buttonRect.left + (buttonRect.width - tooltipRect.width) / 2;
+
+        // 边界检查
+        if (top + tooltipRect.height > window.innerHeight) {
+          top = buttonRect.top - tooltipRect.height - 10;
+        }
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+          left = window.innerWidth - tooltipRect.width - 10;
+        }
+
+        console.log("🔴 [useEffect] 现在移动到正确位置:", {
+          top: top.toFixed(0),
+          left: left.toFixed(0),
+        });
+
+        // 清除 transform 并设置正确的位置
+        tooltip.style.transform = "none";
+        tooltip.style.top = `${top}px`;
+        tooltip.style.left = `${left}px`;
+      }, DELAY_MS);
+
+      return () => clearTimeout(timer);
     }
   }, [showTooltip1]);
 
@@ -73,15 +88,13 @@ const AvoidFlickerExample = () => {
         left = window.innerWidth - tooltipRect.width - 10;
       }
 
-      console.log("🔵 [useLayoutEffect] 计算工具提示位置:", {
+      console.log("🔵 [useLayoutEffect] 在绘制前直接设置正确位置:", {
         top: top.toFixed(0),
         left: left.toFixed(0),
       });
-      console.log(
-        "   注意：此时浏览器还未绘制，工具提示直接显示在正确位置（无闪烁）"
-      );
 
-      // 直接修改 DOM，避免触发额外的渲染
+      // 清除 transform 并设置正确的位置（在浏览器绘制前完成）
+      tooltipRef2.current.style.transform = "none";
       tooltipRef2.current.style.top = `${top}px`;
       tooltipRef2.current.style.left = `${left}px`;
     }
@@ -94,15 +107,20 @@ const AvoidFlickerExample = () => {
         <div>点击按钮显示工具提示，观察工具提示出现时的表现：</div>
         <div style={{ marginTop: "10px" }}>
           <div>
-            🟢 useEffect：工具提示先显示在左上角
-            (0,0)，然后跳到按钮下方（会看到闪烁）
+            🔴 useEffect：工具提示先显示在<strong>屏幕中央</strong>
+            ，等待 100ms 后跳到按钮下方（明显闪烁）
           </div>
           <div>
             🔵 useLayoutEffect：工具提示直接显示在按钮下方正确位置（无闪烁）
           </div>
         </div>
         <div style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-          提示：快速点击按钮显示/隐藏工具提示，仔细观察左侧工具提示是否有位置跳动
+          提示：左侧添加了 {DELAY_MS}ms 延迟，你会<strong>非常明显</strong>
+          地看到：
+          <br />
+          🔴 红色工具提示先在屏幕中央停留 {DELAY_MS}ms，然后跳到按钮下方
+          <br />
+          🔵 绿色工具提示直接出现在按钮下方（无闪烁）
         </div>
       </div>
       <div style={{ display: "flex", gap: "20px", marginTop: "15px" }}>
@@ -134,19 +152,23 @@ const AvoidFlickerExample = () => {
               ref={tooltipRef1}
               style={{
                 position: "fixed",
-                top: "0px", // 初始位置在左上角，effect 会修改为正确位置
-                left: "0px",
-                backgroundColor: "#333",
+                // 🔴 初始位置在屏幕中央，这样跳动更明显
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "#e74c3c", // 红色背景让初始状态更醒目
                 color: "white",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                fontSize: "14px",
+                padding: "12px 20px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
                 zIndex: 1000,
                 pointerEvents: "none",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                boxShadow: "0 4px 20px rgba(231, 76, 60, 0.5)",
+                transition: "none", // 禁用过渡动画，让跳动更明显
               }}
             >
-              这是工具提示内容
+              🔴 useEffect 工具提示
             </div>
           )}
         </div>
@@ -178,19 +200,23 @@ const AvoidFlickerExample = () => {
               ref={tooltipRef2}
               style={{
                 position: "fixed",
-                top: "0px", // 初始位置在左上角，effect 会修改为正确位置
-                left: "0px",
-                backgroundColor: "#333",
+                // 🔵 同样的初始位置在屏幕中央，但 useLayoutEffect 会在绘制前修改
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "#27ae60", // 绿色背景
                 color: "white",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                fontSize: "14px",
+                padding: "12px 20px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
                 zIndex: 1000,
                 pointerEvents: "none",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                boxShadow: "0 4px 20px rgba(39, 174, 96, 0.5)",
+                transition: "none", // 禁用过渡动画
               }}
             >
-              这是工具提示内容
+              🔵 useLayoutEffect 工具提示
             </div>
           )}
         </div>
@@ -200,4 +226,3 @@ const AvoidFlickerExample = () => {
 };
 
 export default AvoidFlickerExample;
-
