@@ -23,7 +23,13 @@ let renderCounts = {
 };
 
 // 普通子组件（不使用 memo）
-const NormalChild = ({ value, onClick }: { value: number; onClick: () => void }) => {
+const NormalChild = ({
+  value,
+  onClick,
+}: {
+  value: number;
+  onClick: () => void;
+}) => {
   renderCounts.callbackChild++;
   return (
     <div style={cardStyle}>
@@ -38,34 +44,40 @@ const NormalChild = ({ value, onClick }: { value: number; onClick: () => void })
 };
 
 // 使用 memo 优化的子组件
-const MemoizedChild = memo(({ value, onClick }: { value: number; onClick: () => void }) => {
-  renderCounts.memoChild++;
-  return (
-    <div style={cardStyle}>
-      <h3 style={cardTitleStyle}>使用 memo 优化</h3>
-      <div style={renderCountStyle}>渲染次数: {renderCounts.memoChild}</div>
-      <div style={counterStyle}>值: {value}</div>
-      <button onClick={onClick} style={getButtonStyleByType("success")}>
-        增加
-      </button>
-    </div>
-  );
-});
+const MemoizedChild = memo(
+  ({ value, onClick }: { value: number; onClick: () => void }) => {
+    renderCounts.memoChild++;
+    return (
+      <div style={cardStyle}>
+        <h3 style={cardTitleStyle}>使用 memo 优化</h3>
+        <div style={renderCountStyle}>渲染次数: {renderCounts.memoChild}</div>
+        <div style={counterStyle}>值: {value}</div>
+        <button onClick={onClick} style={getButtonStyleByType("success")}>
+          增加
+        </button>
+      </div>
+    );
+  }
+);
 
 // 使用 useCallback + memo 优化的子组件
-const CallbackMemoizedChild = memo(({ value, onClick }: { value: number; onClick: () => void }) => {
-  renderCounts.memoizedChild++;
-  return (
-    <div style={cardStyle}>
-      <h3 style={cardTitleStyle}>useCallback + memo</h3>
-      <div style={renderCountStyle}>渲染次数: {renderCounts.memoizedChild}</div>
-      <div style={counterStyle}>值: {value}</div>
-      <button onClick={onClick} style={getButtonStyleByType("warning")}>
-        增加
-      </button>
-    </div>
-  );
-});
+const CallbackMemoizedChild = memo(
+  ({ value, onClick }: { value: number; onClick: () => void }) => {
+    renderCounts.memoizedChild++;
+    return (
+      <div style={cardStyle}>
+        <h3 style={cardTitleStyle}>useCallback + memo</h3>
+        <div style={renderCountStyle}>
+          渲染次数: {renderCounts.memoizedChild}
+        </div>
+        <div style={counterStyle}>值: {value}</div>
+        <button onClick={onClick} style={getButtonStyleByType("warning")}>
+          增加
+        </button>
+      </div>
+    );
+  }
+);
 
 /**
  * useCallback、memo、useMemo 对比示例
@@ -76,15 +88,25 @@ const CallbackMemoizedChild = memo(({ value, onClick }: { value: number; onClick
  */
 const OptimizationHooksDemo = () => {
   renderCounts.parent++;
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
-  const [count3, setCount3] = useState(0);
-  const [otherState, setOtherState] = useState(0);
+  const [count1, setCount1] = useState(0); // 普通子组件
+  const [count2, setCount2] = useState(0); // 使用 memo 优化
+  const [count3, setCount3] = useState(0); // 使用 useCallback + memo 优化
+  const [otherState, setOtherState] = useState(0); // 父组件状态
 
   // 普通函数 - 每次渲染都会创建新函数（导致使用 memo 的子组件也会重新渲染）
   const handleIncrement1 = () => {
     setCount1((prev) => prev + 1);
   };
+  // ** 使用 useCallback 缓存函数,也会失效
+  /*
+   * 使用 useCallback 缓存函数,也会失效
+   * 因为 useCallback 缓存的是函数引用,而不是函数本身
+   * 尽管 handleClick 被 useCallback 包裹，但每次组件渲染时，箭头函数 () => handleClick(item) 都会创建一个新的函数。这意味着 Item 总会接收到一个新的 onClick prop，从而破坏了记忆化效果。
+   * React 编译器无论是否存在这个箭头函数，都能够正确地进行优化，确保 Item  仅在 props.onClick 变化时才重新渲染。
+   * */
+  // const handleIncrement1 = useCallback(() => {
+  //   setCount1((prev) => prev + 1);
+  // }, []);
 
   // 普通函数 - 每次渲染都会创建新函数（即使子组件用了 memo，也会因为函数引用改变而重新渲染）
   const handleIncrement2 = () => {
@@ -112,7 +134,9 @@ const OptimizationHooksDemo = () => {
 
       <div style={cardStyle}>
         <h3 style={cardTitleStyle}>父组件</h3>
-        <div style={renderCountStyle}>父组件渲染次数: {renderCounts.parent}</div>
+        <div style={renderCountStyle}>
+          父组件渲染次数: {renderCounts.parent}
+        </div>
         <div style={counterStyle}>otherState: {otherState}</div>
         <div style={counterStyle}>useMemo 计算结果: {expensiveValue}</div>
         <div style={buttonContainerStyle}>
@@ -140,20 +164,29 @@ const OptimizationHooksDemo = () => {
         <h3 style={descriptionTitleStyle}>核心概念对比：</h3>
         <ul style={listStyle}>
           <li>
-            <strong>useCallback</strong>: 缓存函数引用，避免每次渲染都创建新函数。
-            当函数作为 props 传递给子组件时，配合 memo 使用可以避免不必要的子组件重新渲染。
+            <strong>useCallback</strong>:
+            缓存函数引用，避免每次渲染都创建新函数。 当函数作为 props
+            传递给子组件时，配合 memo 使用可以避免不必要的子组件重新渲染。
           </li>
           <li>
-            <strong>memo</strong>: 缓存组件，对 props 进行浅比较，只有当 props 改变时才重新渲染。
-            但如果 props 中包含函数，且函数每次都是新的，memo 就失效了。
+            <strong>memo</strong>: 缓存组件，对 props 进行浅比较，只有当 props
+            改变时才重新渲染。 但如果 props 中包含函数，且函数每次都是新的，memo
+            就失效了。
+            <br />
+            memo失败的原因：
+            <ul>
+              <li>函数每次都是新的</li>
+            </ul>
           </li>
           <li>
-            <strong>useMemo</strong>: 缓存计算结果，只有当依赖项改变时才重新计算。
+            <strong>useMemo</strong>:
+            缓存计算结果，只有当依赖项改变时才重新计算。
             用于优化昂贵的计算操作，避免每次渲染都重复计算。
           </li>
           <li>
-            <strong>最佳实践</strong>: useCallback + memo 配合使用，可以最大化性能优化效果。
-            当父组件重新渲染时，如果子组件的 props 没有改变（包括函数引用），子组件就不会重新渲染。
+            <strong>最佳实践</strong>: useCallback + memo
+            配合使用，可以最大化性能优化效果。 当父组件重新渲染时，如果子组件的
+            props 没有改变（包括函数引用），子组件就不会重新渲染。
           </li>
         </ul>
       </div>
@@ -162,4 +195,3 @@ const OptimizationHooksDemo = () => {
 };
 
 export default OptimizationHooksDemo;
-
