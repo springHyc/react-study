@@ -8,16 +8,22 @@ export default defineConfig({
     react({
       // 使用函数形式的 babel 选项，根据文件 ID 条件性地应用插件
       babel: (id: string): TransformOptions => {
+        const plugins: NonNullable<TransformOptions["plugins"]> = [];
+
+        // 只对 React19Component.tsx 文件应用 React Compiler
+        if (id.includes("React19Component.tsx")) {
+          plugins.push(["babel-plugin-react-compiler"]);
+        }
+
         // 只对 Component4.tsx 文件应用 babel-plugin-antd-style
         if (id.includes("Component4.tsx")) {
-          return {
-            plugins: [
-              ["babel-plugin-antd-style", { libraryName: "antd-style" }],
-            ],
-          };
+          plugins.push([
+            "babel-plugin-antd-style",
+            { libraryName: "antd-style" },
+          ]);
         }
-        // 其他文件不应用该插件
-        return {};
+
+        return plugins.length > 0 ? { plugins } : {};
       },
     }),
   ],

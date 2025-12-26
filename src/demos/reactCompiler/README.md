@@ -2,6 +2,20 @@
 
 这个示例展示了 React Compiler 的自动优化功能，对比了 React 18 手动优化和 React 19 编译器自动优化的区别。
 
+## 安装和配置
+
+### 1. 安装 React Compiler
+
+```bash
+npm install -D babel-plugin-react-compiler@latest
+```
+
+### 2. 配置 Vite
+
+React Compiler 已经在 `vite.config.ts` 中配置好了，会对所有非 `node_modules` 的文件自动应用编译器优化。
+
+**注意**：由于项目使用的是 React 19，不需要安装 `react-compiler-runtime`（这是 React 17/18 需要的）。
+
 ## 功能说明
 
 ### React 18 方式
